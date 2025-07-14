@@ -1,0 +1,145 @@
+version: '3.8'
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - backend
+
+  apigateway:
+    build:
+      context: ./api-gateway
+    volumes:
+      - ./api-gateway:/var/www
+    ports:
+      - "8000:80"
+    env_file:
+      - ./api-gateway/.env.prod
+    depends_on:
+      - rabbitmq
+    restart: unless-stopped
+    networks:
+      - backend
+
+  kitchen:
+    build:
+      context: ./kitchen-services
+    volumes:
+      - ./kitchen-services:/var/www
+    ports:
+      - "8001:80"
+    depends_on:
+      - mysql_kitchen
+      - rabbitmq
+    env_file:
+      - ./kitchen-services/.env.prod
+    restart: unless-stopped
+    networks:
+      - backend
+
+  warehouse:
+    build:
+      context: ./warehouse-service
+    volumes:
+      - ./warehouse-service:/var/www
+    ports:
+      - "8003:80"
+    depends_on:
+      - mysql_warehouse
+      - rabbitmq
+    env_file:
+      - ./warehouse-service/.env.prod
+    restart: unless-stopped
+    networks:
+      - backend
+
+  notifier:
+    build:
+      context: ./notifier-service
+    volumes:
+      - ./notifier-service:/var/www
+    ports:
+      - "8080:8080"
+    depends_on:
+      - rabbitmq
+    env_file:
+      - ./notifier-service/.env.prod
+    restart: unless-stopped
+    networks:
+      - backend
+
+  users:
+    build:
+      context: ./users-service
+    volumes:
+      - ./users-service:/var/www
+    ports:
+      - "8002:80"
+    depends_on:
+      - mysql_users
+      - rabbitmq
+    env_file:
+      - ./users-service/.env.prod
+    restart: unless-stopped
+    networks:
+      - backend
+
+  mysql_kitchen:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: kitchen_service
+    ports:
+      - "33061:3306"
+    volumes:
+      - mysql_kitchen_data:/var/lib/mysql
+    networks:
+      - backend
+
+  mysql_warehouse:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: warehouse_service
+    ports:
+      - "33062:3306"
+    volumes:
+      - mysql_warehouse_data:/var/lib/mysql
+    networks:
+      - backend
+
+  mysql_users:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: users_service
+    ports:
+      - "33063:3306"
+    volumes:
+      - mysql_users_data:/var/lib/mysql
+    networks:
+      - backend
+
+volumes:
+  mysql_kitchen_data:
+  mysql_warehouse_data:
+  mysql_users_data:
+
+networks:
+  backend:
+    driver: bridge
