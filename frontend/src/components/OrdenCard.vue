@@ -39,7 +39,7 @@
 
     <!-- Ingredientes faltantes si falló -->
     <div v-if="order.status === 'failed'" class="mt-2 alert alert-danger p-2 small">
-      <strong>No se pudo prepararss:</strong>
+      <strong>No se pudo preparar:</strong>
       <ul class="mb-0 ps-3">
         <li v-for="(item, idx) in order.missingIngredients" :key="idx">
           {{ item.name }} (faltan {{ item.needed }})
