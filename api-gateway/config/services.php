@@ -13,6 +13,9 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+    'agent' => [
+        'url' => env('AGENT_SERVICE_URL'),
+    ],
     'kitchen' => [
         'url' => env('KITCHEN_SERVICE_URL'),
     ],

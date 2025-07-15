@@ -68,6 +68,7 @@ const listos = computed(() => orders.value.filter(o => o.status === 'ready'))
 const fallidos = computed(() => orders.value.filter(o => o.status === 'failed'))
 
 async function loadInitial() {
+  console.log("EL LOAD INICIALALALA")
   isLoading.value = true
   await store.fetchOrders()
   store.connectWebSocket()

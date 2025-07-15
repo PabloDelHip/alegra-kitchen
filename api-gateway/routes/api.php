@@ -7,7 +7,7 @@ use App\Http\Controllers\KitchenController;
 use App\Http\Controllers\MetricsController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WarehouseIngredientsController;
-
+use App\Http\Controllers\AgentController;
 
 
 Route::middleware('throttle:60,1')->group(function () {
@@ -15,6 +15,11 @@ Route::middleware('throttle:60,1')->group(function () {
   Route::post('/login', [AuthController::class, 'login']);
 
   Route::middleware('validate.token')->group(function () {
+
+    Route::prefix('agent')->group(function () {
+        Route::get('/recommendations', [AgentController::class, 'recommendations']);
+    });
+
 
       Route::prefix('orders')->group(function () {
           Route::post('/', [OrderController::class, 'store']);

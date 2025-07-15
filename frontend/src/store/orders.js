@@ -126,8 +126,9 @@ export const useOrdersStore = defineStore('orders', () => {
   }
 
   function connectWebSocket() {
-    const socket = new WebSocket('ws://127.0.0.1:8080/app/local?protocol=7&client=js&version=8.0.0&flash=false')
-
+    console.log("TEST CONECTADO")
+    const socket = new WebSocket('ws://3.19.250.16/app/app/local?protocol=7&client=js&version=8.0.0&flash=false')
+    console.log("Vamos conectarnos")
     socket.onopen = () => {
       console.log('🔌 Conectado a WebSocket')
       socket.send(JSON.stringify({
@@ -138,7 +139,6 @@ export const useOrdersStore = defineStore('orders', () => {
         }
       }))
     }
-
     socket.onmessage = (event) => {
       try {
         const message = JSON.parse(event.data)

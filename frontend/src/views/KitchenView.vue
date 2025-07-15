@@ -6,18 +6,10 @@
       <!-- Acciones rápidas -->
       <h4 class="fw-bold mb-4">Acciones rápidas</h4>
       <div class="row g-4 mb-4">
-        <!-- <div class="col-md-6">
-          <QuickActionCard
-            iconClass="bi bi-play-fill"
-            iconBgClass="bg-orange"
-            title="Iniciar nueva jornada"
-            subtitle="Comenzar una nueva sesión de donaciones"
-            buttonText="Iniciar"
-            buttonClass="btn btn-orange text-white"
-            borderClass="border-orange"
-            @action="startSession"
+        <div class="col-md-6">
+          <RecommendationCard
           />
-        </div> -->
+        </div>
 
         <div class="col-md-6">
           <QuickActionCard
@@ -84,6 +76,7 @@ import PlazaView from './PlazaView.vue'
 import InventarioDosView from './InventarioDosView.vue'
 import OrderStatus from '../components/OrderStatus.vue'
 import QuickActionCard from '../components/QuickActionCard.vue'
+import RecommendationCard from '../components/RecommendationCard.vue'
 import { useOrdersStore } from '../store/orders'
 const store = useOrdersStore()
 
